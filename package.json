@@ -1,0 +1,30 @@
+{
+  "name": "vue-stripe-node",
+  "version": "0.0.1",
+  "description": "quick stripe and vue demo",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infinite-industries/vue-stripe-node.git"
+  },
+  "keywords": [
+    "node",
+    "stripe",
+    "vue"
+  ],
+  "author": "dima strakovsky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infinite-industries/vue-stripe-node/issues"
+  },
+  "homepage": "https://github.com/infinite-industries/vue-stripe-node#readme",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "stripe": "^4.11.0"
+  }
+}
