@@ -11,9 +11,52 @@
     <div id="app">
       <h1>Test Item 2 Sell</h1>
       <img src="https://unsplash.it/300" />
-      <p style="max-width:300px">Magna minim tempor eiusmod reprehenderit cillum adipisicing elit incididunt. Exercitation minim amet consectetur veniam sunt anim qui ipsum duis magna aliquip et non ex deserunt. Minim ex incididunt anim consequat nisi aute do mollit. Ipsum proident esse consectetur anim ullamco dolor id labore magna incididunt enim occaecat ut aute sit magna. Id proident consequat est duis minim nostrud do consequat ex velit in consectetur.</p>
-      <p>$9.99</p>
-      <button>PURCHASE</button>
+      <p style="max-width:300px">Magna minim tempor eiusmod reprehenderit cillum adipisicing elit incididunt. Minim ex incididunt anim consequat nisi aute do mollit. Ipsum proident esse consectetur anim ullamco dolor id labore magna incididunt enim occaecat ut aute sit magna.</p>
+      <p>${{price / 100}}</p>
+      <button @click.prevent="purchaseStuff()">PURCHASE</button>
     </div>
+
+    <script>
+
+      var myApp= new Vue({
+        el:'#app',
+        data:{
+          token: null,
+          price: 999,
+          stripe_instance: {}
+        },
+        mounted: function(){
+          this.stripe_instance = StripeCheckout.configure({
+            key: 'pk_test_AnN5EyTAXijWCz9NbgpDpGX4',    //put your own publishable key here
+            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+            locale: 'auto',
+            token: function(token) {
+              console.log('got a token. sending data to localhost');
+              myApp.token= token;
+              myApp.sendData2Server();
+            }
+          });
+        },
+        methods:{
+          purchaseStuff: function(){
+            this.stripe_instance.open({
+              name: 'INFINITE INDUSTRIES',
+              description: 'stuff and stuff',
+              amount: this.price
+            })
+            console.log('attempting to get a token');
+          },
+          sendData2Server: function(){
+            this.$http.post('/process_payment', {token: this.token, price: this.price})
+              .then((response) => {
+                console.log(response.body);
+              },(response) => {
+                // error callback
+                console.log(response);
+              });
+          }
+        }
+      })
+    </script>
   </body>
 </html>

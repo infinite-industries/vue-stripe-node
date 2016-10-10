@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/infinite-industries/vue-stripe-node#readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "stripe": "^4.11.0"

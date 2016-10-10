@@ -1,8 +1,11 @@
 var express = require('express');
 var app = express();
 var dotenv = require('dotenv');
+var bodyParser = require('body-parser');
 
 dotenv.load();   //get cofiguration file from .env
+
+app.use(bodyParser.json());
 
 var stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY);
 
@@ -10,22 +13,26 @@ app.get('/', function(req,res){
   res.sendFile(__dirname +'/index.html');
 })
 
-app.get('/process_payment', function(req,res){
-  var token = request.body.stripeToken;
+app.post('/process_payment', function(req,res){
+  console.log(req.body);
+  res.json({"status":"success"})
 
-  var charge = stripe.charges.create({
-    amount: 1000, // Amount in cents
-    currency: "usd",
-    source: token,
-    description: "Example charge"
-  }, function(err, charge) {
-    if (err && err.type === 'StripeCardError') {
-      // The card has been declined
-    }
-    else{
-      console.log(charge);
-    }
-  });
+  // var token = request.body.stripeToken;
+  // var purchase_price = request.body.price;
+  //
+  // var charge = stripe.charges.create({
+  //   amount: purchase_price, // Amount in cents
+  //   currency: "usd",
+  //   source: token,
+  //   description: "Example charge"
+  // }, function(err, charge) {
+  //   if (err && err.type === 'StripeCardError') {
+  //     // The card has been declined
+  //   }
+  //   else{
+  //     console.log(charge);
+  //   }
+  // });
 })
 
 var appPort=9002;
