@@ -14,16 +14,19 @@
       <p style="max-width:300px">Magna minim tempor eiusmod reprehenderit cillum adipisicing elit incididunt. Minim ex incididunt anim consequat nisi aute do mollit. Ipsum proident esse consectetur anim ullamco dolor id labore magna incididunt enim occaecat ut aute sit magna.</p>
       <p>${{price / 100}}</p>
       <button @click.prevent="purchaseStuff()">PURCHASE</button>
+      <h3>Order Status {{order_status}}</h3>
     </div>
 
     <script>
 
+      var stripe_token= null;
+
       var myApp= new Vue({
         el:'#app',
         data:{
-          token: null,
           price: 999,
-          stripe_instance: {}
+          stripe_instance: {},
+          order_status: 'READY'
         },
         mounted: function(){
           this.stripe_instance = StripeCheckout.configure({
@@ -32,7 +35,7 @@
             locale: 'auto',
             token: function(token) {
               console.log('got a token. sending data to localhost');
-              myApp.token= token;
+              stripe_token= token;
               myApp.sendData2Server();
             }
           });
@@ -47,12 +50,17 @@
             console.log('attempting to get a token');
           },
           sendData2Server: function(){
-            this.$http.post('/process_payment', {token: this.token, price: this.price})
+            console.log(stripe_token);
+            this.order_status= "PENDING";
+
+            this.$http.post('/process_payment', {token: stripe_token, price: this.price})
               .then((response) => {
                 console.log(response.body);
+                this.order_status= "SUCCESSFULLY COMPLETED";
               },(response) => {
                 // error callback
-                console.log(response);
+                console.log(response.body);
+                this.order_status= "FAILED";
               });
           }
         }

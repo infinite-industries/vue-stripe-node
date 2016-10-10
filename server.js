@@ -14,25 +14,27 @@ app.get('/', function(req,res){
 })
 
 app.post('/process_payment', function(req,res){
-  console.log(req.body);
-  res.json({"status":"success"})
 
-  // var token = request.body.stripeToken;
-  // var purchase_price = request.body.price;
-  //
-  // var charge = stripe.charges.create({
-  //   amount: purchase_price, // Amount in cents
-  //   currency: "usd",
-  //   source: token,
-  //   description: "Example charge"
-  // }, function(err, charge) {
-  //   if (err && err.type === 'StripeCardError') {
-  //     // The card has been declined
-  //   }
-  //   else{
-  //     console.log(charge);
-  //   }
-  // });
+  var token = req.body.token;
+  var purchase_price = req.body.price;
+
+  //console.log(token.id +"\n"+purchase_price);
+
+  var charge = stripe.charges.create({
+    amount: purchase_price, // Amount in cents
+    currency: "usd",
+    source: token.id,
+    description: "Example charge"
+  }, function(err, charge) {
+    if (err && err.type === 'StripeCardError') {
+      // The card has been declined
+      res.json({"status":"failure", "reason":"card was declined"});
+    }
+    else{
+      console.log(charge);
+      res.json({"status":"success"});
+    }
+  });
 })
 
 var appPort=9002;
