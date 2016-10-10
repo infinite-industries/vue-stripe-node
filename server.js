@@ -15,7 +15,7 @@ app.get('/', function(req,res){
 
 app.post('/process_payment', function(req,res){
 
-  var token = req.body.token;
+  var token_id = req.body.token_id;
   var purchase_price = req.body.price;
 
   //console.log(token.id +"\n"+purchase_price);
@@ -23,7 +23,7 @@ app.post('/process_payment', function(req,res){
   var charge = stripe.charges.create({
     amount: purchase_price, // Amount in cents
     currency: "usd",
-    source: token.id,
+    source: token_id,
     description: "Example charge"
   }, function(err, charge) {
     if (err && err.type === 'StripeCardError') {

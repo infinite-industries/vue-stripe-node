@@ -19,11 +19,10 @@
 
     <script>
 
-      var stripe_token= null;
-
       var myApp= new Vue({
         el:'#app',
         data:{
+          stripe_token: {},
           price: 999,
           stripe_instance: {},
           order_status: 'READY'
@@ -35,7 +34,7 @@
             locale: 'auto',
             token: function(token) {
               console.log('got a token. sending data to localhost');
-              stripe_token= token;
+              myApp.stripe_token= token;
               myApp.sendData2Server();
             }
           });
@@ -50,10 +49,10 @@
             console.log('attempting to get a token');
           },
           sendData2Server: function(){
-            console.log(stripe_token);
+            console.log(this.stripe_token);
             this.order_status= "PENDING";
 
-            this.$http.post('/process_payment', {token: stripe_token, price: this.price})
+            this.$http.post('/process_payment', {token_id: this.stripe_token.id, price: this.price})
               .then((response) => {
                 console.log(response.body);
                 this.order_status= "SUCCESSFULLY COMPLETED";
